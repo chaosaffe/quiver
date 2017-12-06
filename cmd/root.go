@@ -24,6 +24,8 @@ import (
 )
 
 var cfgFile string
+var displayPort int
+var controlPort int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -35,9 +37,9 @@ examples and usage of using your application. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("This doesn't do anything yet")
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -49,13 +51,15 @@ func Execute() {
 	}
 }
 
-func init() { 
+func init() {
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.quiver.yaml)")
+	rootCmd.PersistentFlags().IntVar(&displayPort, "display-port", 8000, "Specifies the port the clock should serve on")
+	rootCmd.PersistentFlags().IntVar(&controlPort, "control-port", 8080, "Specifies the port the contoller should serve on")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

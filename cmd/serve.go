@@ -15,8 +15,10 @@
 package cmd
 
 import (
-	"fmt"
+	"net/http"
+	"strconv"
 
+	"github.com/chaosaffe/quiver/api"
 	"github.com/spf13/cobra"
 )
 
@@ -31,16 +33,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("serve called")
+		http.ListenAndServe(":"+strconv.Itoa(displayPort), api.Handler())
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(serveCmd)
-	serveCmd.PersistentFlags().Int("display-port", 8000, "Specifies the port the clock should serve on")
-	serveCmd.PersistentFlags().Int("control-port", 8080, "Specifies the port the contoller should serve on")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
