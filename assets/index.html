@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Archery Clock</title>
+  <title>Quiver</title>
   <script type="text/javascript">
     var htmlEscape = function (str) {
       "use strict";
@@ -16,15 +16,18 @@
 
     window.onload = function() {
       var timer = document.getElementById('timer');
-      var source = new EventSource('/events/sse');
+      var source = new EventSource('/timer-events');
       source.onmessage = function(e) {
         var ao = JSON.parse(e.data);
-        timer.innerHTML = htmlEscape(ao.str);
+        timer.innerHTML = htmlEscape(ao.time);
+        timer.style = "height:100vh; width:100%;font-size:100vmin;color:"+ao.color;
       };
     }
   </script>
 </head>
 <body>
-  <h1><div id="timer"></div><h1>
+  <center>
+    <div id="timer"></div>
+  </center>
 </body>
 </html>
