@@ -93,11 +93,11 @@ func countdown() {
 
 func thresholdColor(d time.Duration) string {
 	if d == 0 {
-		return "red"
+		return "#F44336"
 	} else if d <= 30*time.Second {
-		return "yellow"
+		return "#FFEB3B"
 	}
-	return "green"
+	return "#009688"
 }
 
 func durationString(d time.Duration, r time.Duration) string {
