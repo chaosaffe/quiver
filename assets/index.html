@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Quiver</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:500" rel="stylesheet">
   <script type="text/javascript">
     var htmlEscape = function (str) {
       "use strict";
@@ -20,12 +21,12 @@
       source.onmessage = function(e) {
         var ao = JSON.parse(e.data);
         timer.innerHTML = htmlEscape(ao.time);
-        timer.style = "height:100vh; width:100%;font-size:100vmin;color:"+ao.color;
+        timer.style = "height:100vh; width:100%;font-size:50vmin;color:"+ao.color;
       };
     }
   </script>
 </head>
-<body>
+<body bgcolor="#000000" style="font-family: 'Roboto Mono', monospace;">
   <center>
     <div id="timer"></div>
   </center>
