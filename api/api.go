@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const eventWrapper = "data: %s\n\n"
+
 var hub = &Connections{
 	Clients:      make(map[chan TimerEvent]bool),
 	AddClient:    make(chan (chan TimerEvent)),
@@ -38,14 +40,14 @@ func timerEventsHandler(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < 1440; {
 		select {
-		case msg := <-messageChannel:
-			jsonData, _ := json.Marshal(msg)
-			str := string(jsonData)
-			fmt.Fprintf(w, "data: %s\n\n", str)
-			f.Flush()
-		case <-time.After(time.Second * 60):
-			fmt.Fprintf(w, "data: {\"str\": \"No Data\"}\n\n")
-			f.Flush()
+		case timerEvent := <-messageChannel:
+			pushMessage(timerEvent, w, f)
+		case <-time.After(time.Second * 3):
+			t := TimerEvent{
+				Time:  "-:--",
+				Color: "#9E9E9E",
+			}
+			pushMessage(t, w, f)
 			i++
 		case <-notify:
 			f.Flush()
@@ -53,6 +55,13 @@ func timerEventsHandler(w http.ResponseWriter, r *http.Request) {
 			hub.RemoveClient <- messageChannel
 		}
 	}
+}
+
+func pushMessage(t TimerEvent, w http.ResponseWriter, f http.Flusher) {
+	jsonData, _ := json.Marshal(t)
+	str := string(jsonData)
+	fmt.Fprintf(w, eventWrapper, str)
+	f.Flush()
 }
 
 func Handler() http.Handler {
@@ -70,24 +79,17 @@ func Handler() http.Handler {
 }
 
 func countdown() {
-
 	for len(hub.Clients) == 0 {
 		time.Sleep(time.Second)
 	}
-
 	r := time.Second
-
-	t := timer.NewTimer(2*time.Minute, r)
-
+	t := timer.NewTimer(30*time.Second, r)
 	t.Start()
-
 	for d := range t.TickChannel() {
-
 		hub.Messages <- TimerEvent{
 			Time:  durationString(d, r),
 			Color: thresholdColor(d),
 		}
-
 	}
 }
 
